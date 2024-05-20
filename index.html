@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BUY $RONNY BEFORE LAUNCH!</title>
-    <link rel="manifest" href="manifest.json">
     <style>
         @font-face {
             font-family: 'NegritaPro';
-            src: url('https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/NegritaPro.woff2') format('woff2'),
-                 url('https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/NegritaPro.woff') format('woff');
+            src: url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff2') format('woff2'),
+                 url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -25,7 +24,7 @@
         }
         .container {
             background-color: #5FA2C7;
-            padding: 15px; /* Reduced padding */
+            padding: 20px; /* Reduced padding */
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -51,7 +50,6 @@
             font-size: 14px; /* Reduced font-size */
             margin-top: 20px;
             width: 100%;
-            font-family: 'NegritaPro', Arial, sans-serif;
         }
         button:disabled {
             background-color: #ccc;
@@ -75,7 +73,7 @@
             color: #EFE8E4;
         }
         #ronnyPerSol {
-            margin-bottom: 20px; /* Add some space below */
+            margin-bottom: 10px;
             color: #EFE8E4;
         }
         #raisedAmount, #boughtAmount {
@@ -105,38 +103,13 @@
             border-radius: 12px;
         }
         .wallet-logo {
-            width: 24px; /* Adjust the width to make the logo smaller */
+            width: 20px; /* Adjust the width to make the logo smaller */
             height: auto;
             margin: 10px;
         }
     </style>
     <!-- Ensure the correct version of Solana Web3.js is loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-</head>
-<body>
-    <div class="container">
-        <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/$RONNYwnobg.png" alt="Ronny Image">
-        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
-        <button id="connectWallet">Connect Wallet</button>
-        <p id="walletAddress"></p>
-        <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
-        <span id="ronnyPerSol">1 SOL = 6969 $RONNY</span>
-        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
-        <p id="ronnyAmount"></p>
-        <p>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
-        <div id="raisedAmount">Total Raised: 0 SOL</div>
-        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
-    </div>
-
-    <div id="walletModal" class="modal">
-        <div class="modal-content">
-            <h2>Select Wallet</h2>
-            <button onclick="connectWallet('phantom')">
-                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_Circle_128x128.png" alt="Phantom" class="wallet-logo"> Phantom
-            </button>
-        </div>
-    </div>
-
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
@@ -159,6 +132,7 @@
 
             if (walletType === 'phantom' && window.solana && window.solana.isPhantom) {
                 try {
+                    await window.solana.disconnect(); // Ensure disconnection before connecting
                     const resp = await window.solana.connect({ onlyIfTrusted: false });
                     account = resp.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
@@ -171,7 +145,7 @@
                     console.error('Phantom Wallet Connection Error:', err);
                 }
             } else {
-                alert('Please install the Phantom wallet');
+                alert('Please install the selected wallet');
             }
         }
 
@@ -314,5 +288,29 @@
             }
         }
     </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
+        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <p id="walletAddress"></p>
+        <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
+        <span id="ronnyPerSol">1 SOL = 6969 $RONNY</span>
+        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
+        <p id="ronnyAmount"></p>
+        <p>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
+        <div id="raisedAmount">Total Raised: 0 SOL</div>
+        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
+    </div>
+
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Wallet</h2>
+            <button onclick="connectWallet('phantom')">
+                <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/Phantom-Icon_Circle_128x128.png" alt="Phantom" class="wallet-logo"> Phantom
+            </button>
+        </div>
+    </div>
 </body>
 </html>
