@@ -110,13 +110,13 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@solflare-wallet/sdk@1.0.1/dist/index.iife.js"></script>
+    <script src="https://unpkg.com/@solflare-wallet/sdk@latest/dist/index.iife.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
-        const solflareInstance = new Solflare();
+        let solflareInstance;
 
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
@@ -146,6 +146,7 @@
                 }
             } else if (walletType === 'solflare') {
                 try {
+                    solflareInstance = new Solflare();
                     await solflareInstance.connect();
                     account = solflareInstance.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
@@ -164,7 +165,7 @@
         function disconnectWallet() {
             if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
                 window.solana.disconnect();
-            } else if (connectedWalletType === 'solflare' && solflareInstance.isConnected) {
+            } else if (connectedWalletType === 'solflare' && solflareInstance && solflareInstance.isConnected) {
                 solflareInstance.disconnect();
             }
 
