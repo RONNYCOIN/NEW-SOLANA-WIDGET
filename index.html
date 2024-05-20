@@ -100,14 +100,29 @@
             padding: 20px;
             border: 1px solid #888;
             width: 70%;
-            max-width: 250px;
+            max-width: 300px;
             text-align: center;
             border-radius: 12px;
         }
         .wallet-logo {
-            width: 20px;
+            width: 30px;
             height: auto;
-            margin: 10px;
+            margin-right: 10px;
+        }
+        .wallet-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+            color: #EFE8E4;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'NegritaPro', Arial, sans-serif;
+            margin-top: 10px;
+            width: 100%;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
@@ -328,12 +343,14 @@
 
     <div id="walletModal" class="modal">
         <div class="modal-content">
-            <h2>Select Wallet</h2>
-            <button onclick="connectWallet('phantom')">
-                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
+            <h2 style="font-size: 20px; margin-bottom: 20px;">Select Wallet</h2>
+            <button class="wallet-button" onclick="connectWallet('phantom')">
+                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo">
+                <span>Phantom</span>
             </button>
-            <button onclick="connectWallet('solflare')">
-                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
+            <button class="wallet-button" onclick="connectWallet('solflare')">
+                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/solflare.png" alt="Solflare" class="wallet-logo">
+                <span>Solflare</span>
             </button>
         </div>
     </div>
