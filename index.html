@@ -161,7 +161,9 @@
                     console.error('Phantom Wallet Connection Error:', err);
                 }
             } else if (walletType === 'solflare') {
-                solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
+                if (!solflare) {
+                    solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
+                }
                 try {
                     await solflare.connect();
                     account = solflare.publicKey.toString();
@@ -181,7 +183,7 @@
         function disconnectWallet() {
             if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
                 window.solana.disconnect();
-            } else if (connectedWalletType === 'solflare' && solflare.connected) {
+            } else if (connectedWalletType === 'solflare' && solflare && solflare.connected) {
                 solflare.disconnect();
             }
 
