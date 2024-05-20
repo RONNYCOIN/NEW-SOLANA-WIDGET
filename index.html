@@ -126,13 +126,14 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solflare-wallet/sdk@1.0.14/dist/solflare.min.js"></script>
+    <script src="https://unpkg.com/@solana/wallet-adapter-wallets@0.11.4/dist/index.iife.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
-        let solflareInstance = null;
+
+        const solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
 
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
@@ -162,9 +163,8 @@
                 }
             } else if (walletType === 'solflare') {
                 try {
-                    solflareInstance = new Solflare({ network: 'mainnet' });
-                    await solflareInstance.connect();
-                    account = solflareInstance.publicKey.toString();
+                    await solflare.connect();
+                    account = solflare.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
                     document.getElementById('connectWallet').textContent = "DISCONNECT";
                     document.getElementById('sendSol').disabled = false;
@@ -181,8 +181,8 @@
         function disconnectWallet() {
             if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
                 window.solana.disconnect();
-            } else if (connectedWalletType === 'solflare' && solflareInstance && solflareInstance.isConnected) {
-                solflareInstance.disconnect();
+            } else if (connectedWalletType === 'solflare' && solflare.connected) {
+                solflare.disconnect();
             }
 
             account = null;
@@ -235,7 +235,7 @@
                     alert('Transaction successful with signature: ' + signature);
                     console.log('Transaction successful:', signature);
                 } else if (connectedWalletType === 'solflare') {
-                    const signedTransaction = await solflareInstance.signTransaction(transaction);
+                    const signedTransaction = await solflare.signTransaction(transaction);
                     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
                     await connection.confirmTransaction(signature);
                     alert('Transaction successful with signature: ' + signature);
