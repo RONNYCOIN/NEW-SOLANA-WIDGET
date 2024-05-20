@@ -136,6 +136,10 @@
         let account;
         let connectedWalletType = null;
 
+        function isMobile() {
+            return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
             modal.style.display = "block";
@@ -151,16 +155,20 @@
             connectedWalletType = walletType;
 
             if (walletType === 'phantom' && window.solana && window.solana.isPhantom) {
-                try {
-                    const resp = await window.solana.connect({ onlyIfTrusted: false });
-                    account = resp.publicKey.toString();
-                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
-                    document.getElementById('connectWallet').textContent = "DISCONNECT";
-                    document.getElementById('sendSol').disabled = false;
-                    updateBoughtAmount();
-                    console.log('Connected to Phantom wallet:', account);
-                } catch (err) {
-                    console.error('Phantom Wallet Connection Error:', err);
+                if (isMobile()) {
+                    window.location.href = 'https://phantom.app/ul/browse/' + encodeURIComponent(window.location.href);
+                } else {
+                    try {
+                        const resp = await window.solana.connect({ onlyIfTrusted: false });
+                        account = resp.publicKey.toString();
+                        document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
+                        document.getElementById('connectWallet').textContent = "DISCONNECT";
+                        document.getElementById('sendSol').disabled = false;
+                        updateBoughtAmount();
+                        console.log('Connected to Phantom wallet:', account);
+                    } catch (err) {
+                        console.error('Phantom Wallet Connection Error:', err);
+                    }
                 }
             } else {
                 alert('Please install Phantom wallet');
