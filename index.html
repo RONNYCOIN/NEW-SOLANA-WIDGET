@@ -126,14 +126,14 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-wallets@0.11.4/dist/index.iife.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-base@0.8.0/lib/index.iife.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solana/wallet-adapter-wallets@0.8.0/lib/index.iife.min.js" crossorigin="anonymous"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
-
-        const solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
+        let solflare = null;
 
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
@@ -163,6 +163,7 @@
                 }
             } else if (walletType === 'solflare') {
                 try {
+                    solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
                     await solflare.connect();
                     account = solflare.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
