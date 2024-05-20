@@ -132,7 +132,7 @@
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
-        const solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
+        let solflare = null;
 
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
@@ -162,6 +162,7 @@
                 }
             } else if (walletType === 'solflare') {
                 try {
+                    solflare = new solanaWallets.SolflareWalletAdapter({ network: 'mainnet' });
                     await solflare.connect();
                     account = solflare.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
