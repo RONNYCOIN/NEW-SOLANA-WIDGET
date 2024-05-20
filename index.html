@@ -111,13 +111,13 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@solflare-wallet/sdk@1.0.14/dist/solflare.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@solflare-wallet/sdk@latest/dist/solflare.iife.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
-        let solflareInstance;
+        let solflareInstance = null;
 
         function showWalletModal() {
             const modal = document.getElementById("walletModal");
