@@ -270,7 +270,7 @@
         }
 
         async function updateBoughtAmount() {
-            if (!account || typeof solanaWeb3 is not defined') {
+            if (!account || typeof solanaWeb3 === 'undefined') {
                 console.error('solanaWeb3 is not defined or no account connected');
                 return;
             }
