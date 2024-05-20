@@ -7,8 +7,8 @@
     <style>
         @font-face {
             font-family: 'NegritaPro';
-            src: url('https://github.com/RONNYCOIN/solana-payment-widget/raw/main/NegritaPro.woff2') format('woff2'),
-                 url('https://github.com/RONNYCOIN/solana-payment-widget/raw/main/NegritaPro.woff') format('woff');
+            src: url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff2') format('woff2'),
+                 url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -108,13 +108,15 @@
             margin: 10px;
         }
     </style>
-    <!-- Ensure the correct version of Solana Web3.js is loaded -->
+    <!-- Ensure the correct version of Solana Web3.js and Solflare SDK are loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
+    <script src="https://unpkg.com/@solflare-wallet/sdk@latest/dist/index.iife.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
         let account;
         let connectedWalletType = null;
+        const solflare = new Solflare();
         const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE3MTYxOTAwOTk3MDYsImVtYWlsIjoiYWxvdXNoeTEyMjNAZ21haWwuY29tIiwiYWN0aW9uIjoidG9rZW4tYXBpIiwiaWF0IjoxNzE2MTkwMDk5fQ.323IjUuqor9mewLr_m79suob2cCewtq7CH7Z_LJr42c';
 
         function showWalletModal() {
@@ -144,10 +146,10 @@
                 } catch (err) {
                     console.error('Phantom Wallet Connection Error:', err);
                 }
-            } else if (walletType === 'solflare' && window.solflare) {
+            } else if (walletType === 'solflare') {
                 try {
-                    await window.solflare.connect();
-                    account = window.solflare.publicKey.toString();
+                    await solflare.connect();
+                    account = solflare.publicKey.toString();
                     document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
                     document.getElementById('connectWallet').textContent = "DISCONNECT";
                     document.getElementById('sendSol').disabled = false;
@@ -165,8 +167,8 @@
         function disconnectWallet() {
             if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
                 window.solana.disconnect();
-            } else if (connectedWalletType === 'solflare' && window.solflare) {
-                window.solflare.disconnect();
+            } else if (connectedWalletType === 'solflare' && solflare.isConnected) {
+                solflare.disconnect();
             }
 
             account = null;
@@ -219,7 +221,7 @@
                     alert('Transaction successful with signature: ' + signature);
                     console.log('Transaction successful:', signature);
                 } else if (connectedWalletType === 'solflare') {
-                    const signedTransaction = await window.solflare.signTransaction(transaction);
+                    const signedTransaction = await solflare.signTransaction(transaction);
                     const signature = await connection.sendRawTransaction(signedTransaction.serialize());
                     await connection.confirmTransaction(signature);
                     alert('Transaction successful with signature: ' + signature);
@@ -329,7 +331,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/$RONNYwnobg.png" alt="Ronny Image">
+        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <p id="walletAddress"></p>
@@ -346,10 +348,10 @@
         <div class="modal-content">
             <h2>Select Wallet</h2>
             <button onclick="connectWallet('phantom')">
-                <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
+                <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
             </button>
             <button onclick="connectWallet('solflare')">
-                <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
+                <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
             </button>
         </div>
     </div>
