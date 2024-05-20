@@ -7,8 +7,8 @@
     <style>
         @font-face {
             font-family: 'NegritaPro';
-            src: url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff2') format('woff2'),
-                 url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff') format('woff');
+            src: url('https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/NegritaPro.woff2') format('woff2'),
+                 url('https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/NegritaPro.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
@@ -24,11 +24,11 @@
         }
         .container {
             background-color: #5FA2C7;
-            padding: 20px; /* Reduced padding */
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 350px; /* Reduced max-width */
+            max-width: 350px;
             width: 100%;
         }
         h1 {
@@ -36,7 +36,7 @@
             margin-bottom: 20px;
         }
         img {
-            width: 120px; /* Adjust the width to make the image/logo smaller */
+            width: 120px;
             height: auto;
             margin-bottom: 20px;
         }
@@ -47,7 +47,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px; /* Reduced font-size */
+            font-size: 14px;
             margin-top: 20px;
             width: 100%;
         }
@@ -56,7 +56,7 @@
         }
         input[type="number"] {
             padding: 10px;
-            font-size: 14px; /* Reduced font-size */
+            font-size: 14px;
             margin-top: 10px;
             width: calc(100% - 22px);
             border-radius: 5px;
@@ -64,12 +64,12 @@
         }
         #walletAddress {
             margin-top: 15px;
-            word-break: break-all;
+            word-break: break-word;
             color: #EFE8E4;
         }
         #ronnyAmount {
             margin-top: 10px;
-            font-size: 16px; /* Reduced font-size */
+            font-size: 16px;
             color: #EFE8E4;
         }
         #ronnyPerSol {
@@ -78,7 +78,7 @@
         }
         #raisedAmount, #boughtAmount {
             margin-top: 20px;
-            font-size: 16px; /* Reduced font-size */
+            font-size: 16px;
             color: #EFE8E4;
         }
         .modal {
@@ -97,18 +97,17 @@
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 70%; /* Reduced width */
-            max-width: 250px; /* Reduced max-width */
+            width: 70%;
+            max-width: 250px;
             text-align: center;
             border-radius: 12px;
         }
         .wallet-logo {
-            width: 20px; /* Adjust the width to make the logo smaller */
+            width: 20px;
             height: auto;
             margin: 10px;
         }
     </style>
-    <!-- Ensure the correct version of Solana Web3.js and Solflare SDK are loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
     <script src="https://unpkg.com/@solflare-wallet/sdk@latest/dist/index.iife.js"></script>
     <script>
@@ -199,7 +198,7 @@
             }
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
 
             try {
                 const { blockhash } = await connection.getRecentBlockhash();
@@ -243,7 +242,7 @@
                 return;
             }
 
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
             const publicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
             try {
                 const balance = await connection.getBalance(publicKey);
@@ -261,7 +260,7 @@
                 return;
             }
 
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
             const publicKey = new solanaWeb3.PublicKey(account);
             try {
                 const balance = await connection.getBalance(publicKey);
@@ -331,7 +330,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
+        <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/$RONNYwnobg.png" alt="Ronny Image">
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <p id="walletAddress"></p>
@@ -348,10 +347,10 @@
         <div class="modal-content">
             <h2>Select Wallet</h2>
             <button onclick="connectWallet('phantom')">
-                <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
+                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
             </button>
             <button onclick="connectWallet('solflare')">
-                <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
+                <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
             </button>
         </div>
     </div>
