@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUY $RONNY BEFORE LAUNCH!</title>
+    <style>
+        @font-face {
+            font-family: 'NegritaPro';
+            src: url('https://github.com/RONNYCOIN/solana-payment-widget/raw/main/NegritaPro.woff2') format('woff2'),
+                 url('https://github.com/RONNYCOIN/solana-payment-widget/raw/main/NegritaPro.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'NegritaPro', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #5FA2C7;
+        }
+        .container {
+            background-color: #5FA2C7;
+            padding: 20px; /* Reduced padding */
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 350px; /* Reduced max-width */
+            width: 100%;
+        }
+        h1 {
+            color: #EFE8E4;
+            margin-bottom: 20px;
+        }
+        img {
+            width: 120px; /* Adjust the width to make the image/logo smaller */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #000;
+            color: #EFE8E4;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* Reduced font-size */
+            margin-top: 20px;
+            width: 100%;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        input[type="number"] {
+            padding: 10px;
+            font-size: 14px; /* Reduced font-size */
+            margin-top: 10px;
+            width: calc(100% - 22px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #walletAddress {
+            margin-top: 15px;
+            word-break: break-all;
+            color: #EFE8E4;
+        }
+        #ronnyAmount {
+            margin-top: 10px;
+            font-size: 16px; /* Reduced font-size */
+            color: #EFE8E4;
+        }
+        #ronnyPerSol {
+            margin-bottom: 10px;
+            color: #EFE8E4;
+        }
+        #raisedAmount, #boughtAmount {
+            margin-top: 20px;
+            font-size: 16px; /* Reduced font-size */
+            color: #EFE8E4;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #5FA2C7;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 70%; /* Reduced width */
+            max-width: 250px; /* Reduced max-width */
+            text-align: center;
+            border-radius: 12px;
+        }
+        .wallet-logo {
+            width: 20px; /* Adjust the width to make the logo smaller */
+            height: auto;
+            margin: 10px;
+        }
+    </style>
+    <!-- Ensure the correct version of Solana Web3.js is loaded -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
+    <script>
+        const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
+        const RONNY_PER_SOL = 6969;
+        let account;
+        let connectedWalletType = null;
+        const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE3MTYxOTAwOTk3MDYsImVtYWlsIjoiYWxvdXNoeTEyMjNAZ21haWwuY29tIiwiYWN0aW9uIjoidG9rZW4tYXBpIiwiaWF0IjoxNzE2MTkwMDk5fQ.323IjUuqor9mewLr_m79suob2cCewtq7CH7Z_LJr42c';
+
+        function showWalletModal() {
+            const modal = document.getElementById("walletModal");
+            modal.style.display = "block";
+        }
+
+        function hideWalletModal() {
+            const modal = document.getElementById("walletModal");
+            modal.style.display = "none";
+        }
+
+        async function connectWallet(walletType) {
+            hideWalletModal();
+            connectedWalletType = walletType;
+
+            if (walletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                try {
+                    const resp = await window.solana.connect({ onlyIfTrusted: false });
+                    account = resp.publicKey.toString();
+                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
+                    document.getElementById('connectWallet').textContent = "DISCONNECT";
+                    document.getElementById('sendSol').disabled = false;
+                    updateBoughtAmount();
+                    updateTokenBalance(account);
+                    console.log('Connected to Phantom wallet:', account);
+                } catch (err) {
+                    console.error('Phantom Wallet Connection Error:', err);
+                }
+            } else if (walletType === 'solflare' && window.solflare) {
+                try {
+                    await window.solflare.connect();
+                    account = window.solflare.publicKey.toString();
+                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
+                    document.getElementById('connectWallet').textContent = "DISCONNECT";
+                    document.getElementById('sendSol').disabled = false;
+                    updateBoughtAmount();
+                    updateTokenBalance(account);
+                    console.log('Connected to Solflare wallet:', account);
+                } catch (err) {
+                    console.error('Solflare Wallet Connection Error:', err);
+                }
+            } else {
+                alert('Please install the selected wallet');
+            }
+        }
+
+        function disconnectWallet() {
+            if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                window.solana.disconnect();
+            } else if (connectedWalletType === 'solflare' && window.solflare) {
+                window.solflare.disconnect();
+            }
+
+            account = null;
+            connectedWalletType = null;
+            document.getElementById('walletAddress').textContent = "";
+            document.getElementById('connectWallet').textContent = "Connect Wallet";
+            document.getElementById('sendSol').disabled = true;
+            console.log('Wallet disconnected');
+        }
+
+        async function sendSol() {
+            if (!account) {
+                console.error('No wallet connected');
+                alert('Please connect your wallet first.');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            if (typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined');
+                alert('Solana Web3 library is not loaded.');
+                return;
+            }
+
+            const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+
+            try {
+                const { blockhash } = await connection.getRecentBlockhash();
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: new solanaWeb3.PublicKey(account),
+                        toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
+                        lamports: lamports
+                    })
+                );
+
+                transaction.recentBlockhash = blockhash;
+                transaction.feePayer = new solanaWeb3.PublicKey(account);
+
+                if (connectedWalletType === 'phantom') {
+                    const signedTransaction = await window.solana.signTransaction(transaction);
+                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                    await connection.confirmTransaction(signature);
+                    alert('Transaction successful with signature: ' + signature);
+                    console.log('Transaction successful:', signature);
+                } else if (connectedWalletType === 'solflare') {
+                    const signedTransaction = await window.solflare.signTransaction(transaction);
+                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                    await connection.confirmTransaction(signature);
+                    alert('Transaction successful with signature: ' + signature);
+                    console.log('Transaction successful:', signature);
+                }
+
+                updateRaisedAmount();
+                updateBoughtAmount();
+            } catch (err) {
+                console.error('Transaction Error:', err);
+                alert('Transaction failed: ' + err.message);
+            }
+        }
+
+        async function updateRaisedAmount() {
+            if (typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined');
+                alert('Solana Web3 library is not loaded.');
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const publicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
+            try {
+                const balance = await connection.getBalance(publicKey);
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                document.getElementById('raisedAmount').textContent = "Total Raised: " + solBalance.toFixed(2) + " SOL";
+                console.log('Updated raised amount:', solBalance);
+            } catch (err) {
+                console.error('Failed to update raised amount:', err);
+            }
+        }
+
+        async function updateBoughtAmount() {
+            if (!account || typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined or no account connected');
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const publicKey = new solanaWeb3.PublicKey(account);
+            try {
+                const balance = await connection.getBalance(publicKey);
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                const ronnyBalance = solBalance * RONNY_PER_SOL;
+                document.getElementById('boughtAmount').textContent = "Your $RONNY: " + ronnyBalance.toFixed(2) + " $RONNY Coins";
+                console.log('Updated bought amount:', ronnyBalance);
+            } catch (err) {
+                console.error('Failed to update bought amount:', err);
+            }
+        }
+
+        async function updateTokenBalance(walletAddress) {
+            const url = `https://api.solscan.io/account/tokens?address=${walletAddress}`;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+                const data = await response.json();
+                console.log('Token balance:', data);
+                // Update the UI with token balance information as needed
+            } catch (error) {
+                console.error('Error fetching token balance:', error);
+            }
+        }
+
+        function updateRonnyAmount() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (!isNaN(amount) && amount > 0) {
+                const ronnyAmount = amount * RONNY_PER_SOL;
+                document.getElementById('ronnyAmount').textContent = `You will receive: ${ronnyAmount.toFixed(2)} $RONNY Coins`;
+            } else {
+                document.getElementById('ronnyAmount').textContent = "";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateRaisedAmount();
+
+            const connectWalletBtn = document.getElementById('connectWallet');
+            if (connectWalletBtn) {
+                connectWalletBtn.addEventListener('click', function() {
+                    if (connectedWalletType) {
+                        disconnectWallet();
+                    } else {
+                        showWalletModal();
+                    }
+                });
+            }
+
+            const amountInput = document.getElementById('amount');
+            if (amountInput) {
+                amountInput.addEventListener('input', updateRonnyAmount);
+            }
+        });
+
+        window.onclick = function(event) {
+            const modal = document.getElementById("walletModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/$RONNYwnobg.png" alt="Ronny Image">
+        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <p id="walletAddress"></p>
+        <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
+        <span id="ronnyPerSol">1 SOL = 6969 $RONNY</span>
+        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
+        <p id="ronnyAmount"></p>
+        <p>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
+        <div id="raisedAmount">Total Raised: 0 SOL</div>
+        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
+    </div>
+
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Wallet</h2>
+            <button onclick="connectWallet('phantom')">
+                <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/Phantom-Icon_App_60x60.png" alt="Phantom" class="wallet-logo"> Phantom
+            </button>
+            <button onclick="connectWallet('solflare')">
+                <img src="https://github.com/RONNYCOIN/solana-payment-widget/raw/main/solflare.png" alt="Solflare" class="wallet-logo"> Solflare
+            </button>
+        </div>
+    </div>
+</body>
+</html>
