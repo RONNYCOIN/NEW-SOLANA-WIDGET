@@ -1,0 +1,21 @@
+{
+    "name": "RONNY Widget",
+    "short_name": "$RONNY",
+    "description": "A widget to buy $RONNY tokens before launch",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#5FA2C7",
+    "theme_color": "#5FA2C7",
+    "icons": [
+        {
+            "src": "https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_App_60x60.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/Phantom-Icon_App_60x60.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
