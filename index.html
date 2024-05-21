@@ -49,11 +49,15 @@
         button:disabled {
             background-color: #ccc;
         }
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
         input[type="number"] {
             padding: 10px;
             font-size: 16px;
-            margin-top: 20px;
-            width: calc(100% - 22px);
+            width: calc(50% - 10px);
             border-radius: 5px;
             border: 1px solid #ccc;
         }
@@ -65,6 +69,11 @@
         #raisedAmount {
             margin-top: 20px;
             font-size: 18px;
+            color: #EFE8E4;
+        }
+        #transactionStatus {
+            margin-top: 20px;
+            font-size: 16px;
             color: #EFE8E4;
         }
         .modal {
@@ -269,6 +278,15 @@
                     sendSol();
                 });
             }
+
+            const amountInput = document.getElementById('amount');
+            if (amountInput) {
+                amountInput.addEventListener('input', function() {
+                    const amount = parseFloat(amountInput.value);
+                    const ronnyAmount = isNaN(amount) ? 0 : amount * 6969;
+                    document.getElementById('ronnyAmount').value = ronnyAmount.toFixed(2);
+                });
+            }
         });
     </script>
 </head>
@@ -278,10 +296,12 @@
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <div id="walletAddress"></div>
-        <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
-        <div id="ronnyPerSol">1 SOL = 6969 $RONNY</div>
+        <div class="input-container">
+            <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
+            <input type="text" id="ronnyAmount" placeholder="0 $RONNY" readonly>
+        </div>
         <button id="sendSol" disabled>BUY $RONNY!</button>
-        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
+        <div id="boughtAmount" style="margin-top: 10px;">Your $RONNY: 0 $RONNY Coins</div>
         <div id="raisedAmount">Total Raised: 0 SOL</div>
         <div id="transactionStatus"></div>
         <div>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
