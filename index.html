@@ -190,7 +190,8 @@
                 console.log('Sending transaction:', transaction);
 
                 if (connectedWalletType === 'phantom') {
-                    const { signature } = await window.solana.signAndSendTransaction(transaction);
+                    const signedTransaction = await window.solana.signTransaction(transaction);
+                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
                     await connection.confirmTransaction(signature);
                     alert('Transaction successful with signature: ' + signature);
                     console.log('Transaction successful:', signature);
@@ -273,7 +274,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://alimahdi01.github.io/solana-payment-widget/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
+        <img src="https://ronnycoin.github.io/NEW-SOLANA-WIDGET/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <div id="walletAddress"></div>
