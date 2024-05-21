@@ -24,11 +24,11 @@
         }
         .container {
             background-color: #5FA2C7;
-            padding: 20px; /* Reduced padding */
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 350px; /* Reduced max-width */
+            max-width: 350px;
             width: 100%;
         }
         h1 {
@@ -36,7 +36,7 @@
             margin-bottom: 20px;
         }
         img {
-            width: 120px; /* Adjust the width to make the image/logo smaller */
+            width: 120px;
             height: auto;
             margin-bottom: 20px;
         }
@@ -47,7 +47,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 14px; /* Reduced font-size */
+            font-size: 14px;
             margin-top: 20px;
             width: 100%;
         }
@@ -56,7 +56,7 @@
         }
         input[type="number"] {
             padding: 10px;
-            font-size: 14px; /* Reduced font-size */
+            font-size: 14px;
             margin-top: 10px;
             width: calc(100% - 22px);
             border-radius: 5px;
@@ -66,11 +66,11 @@
             margin-top: 15px;
             word-break: break-all;
             color: #EFE8E4;
-            overflow-wrap: break-word; /* Ensure wallet address breaks to the next line */
+            overflow-wrap: anywhere;
         }
         #ronnyAmount {
             margin-top: 10px;
-            font-size: 16px; /* Reduced font-size */
+            font-size: 16px;
             color: #EFE8E4;
         }
         #ronnyPerSol {
@@ -79,7 +79,7 @@
         }
         #raisedAmount, #boughtAmount {
             margin-top: 20px;
-            font-size: 16px; /* Reduced font-size */
+            font-size: 16px;
             color: #EFE8E4;
         }
         .modal {
@@ -98,18 +98,17 @@
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 70%; /* Reduced width */
-            max-width: 250px; /* Reduced max-width */
+            width: 70%;
+            max-width: 250px;
             text-align: center;
             border-radius: 12px;
         }
         .wallet-logo {
-            width: 20px; /* Adjust the width to make the logo smaller */
+            width: 20px;
             height: auto;
             margin: 10px;
         }
     </style>
-    <!-- Ensure the correct version of Solana Web3.js is loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
