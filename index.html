@@ -149,12 +149,24 @@
                 try {
                     const resp = await window.solana.connect({ onlyIfTrusted: false });
                     account = resp.publicKey.toString();
-                    document.getElementById('connectWalletBtn').textContent = 'Connected';
+                    document.getElementById('connectWalletBtn').textContent = 'Disconnect Wallet';
                     document.getElementById('buyRonnyBtn').disabled = false;
+                    document.getElementById('connectWalletBtn').addEventListener('click', disconnectWallet);
                     updateTokenBalance();
                 } catch (err) {
                     console.error('Phantom Wallet Connection Error:', err);
                 }
+            }
+        }
+
+        function disconnectWallet() {
+            if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                window.solana.disconnect();
+                document.getElementById('connectWalletBtn').textContent = 'Connect Wallet';
+                document.getElementById('buyRonnyBtn').disabled = true;
+                connectedWalletType = null;
+                account = null;
+                document.getElementById('connectWalletBtn').removeEventListener('click', disconnectWallet);
             }
         }
 
