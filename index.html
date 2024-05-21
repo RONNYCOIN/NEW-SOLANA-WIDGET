@@ -189,8 +189,16 @@
 
             try {
                 console.log('Sending transaction:', transaction);
-                const signedTransaction = await window.solana.signTransaction(transaction);
-                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+
+                let signature;
+                if (connectedWalletType === 'phantom') {
+                    const signedTransaction = await window.solana.signTransaction(transaction);
+                    signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                } else if (connectedWalletType === 'solflare') {
+                    const { signature: sig } = await window.solflare.signAndSendTransaction(transaction);
+                    signature = sig;
+                }
+
                 await connection.confirmTransaction(signature);
                 document.getElementById('transactionStatus').textContent = "Transaction successful with signature: " + signature;
                 console.log('Transaction successful:', signature);
