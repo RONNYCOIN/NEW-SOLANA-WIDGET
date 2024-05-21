@@ -188,10 +188,20 @@
 
             try {
                 console.log('Sending transaction:', transaction);
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
-                await connection.confirmTransaction(signature);
-                alert('Transaction successful with signature: ' + signature);
-                console.log('Transaction successful:', signature);
+
+                if (connectedWalletType === 'phantom') {
+                    const { signature } = await window.solana.signAndSendTransaction(transaction);
+                    await connection.confirmTransaction(signature);
+                    alert('Transaction successful with signature: ' + signature);
+                    console.log('Transaction successful:', signature);
+                } else if (connectedWalletType === 'solflare') {
+                    const signedTransaction = await window.solflare.signTransaction(transaction);
+                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                    await connection.confirmTransaction(signature);
+                    alert('Transaction successful with signature: ' + signature);
+                    console.log('Transaction successful:', signature);
+                }
+
                 updateRaisedAmount();
             } catch (err) {
                 console.error('Transaction Error:', err);
