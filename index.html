@@ -61,6 +61,13 @@
             border-radius: 5px;
             border: 1px solid #ccc;
         }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: calc(50% - 10px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
         #walletAddress {
             margin-top: 15px;
             word-break: break-all;
@@ -278,8 +285,8 @@
         <button id="connectWallet">Connect Wallet</button>
         <div id="walletAddress"></div>
         <div class="input-container">
-            <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
-            <input type="text" id="ronnyAmount" placeholder="0 $RONNY" readonly>
+            <input type="number" id="amount" placeholder="" style="width: calc(50% - 10px);">
+            <input type="text" id="ronnyAmount" placeholder="0 $RONNY" readonly style="width: calc(50% - 10px);">
         </div>
         <button id="sendSol" disabled>BUY $RONNY!</button>
         <div id="raisedAmount">Total Raised: 0 SOL</div>
