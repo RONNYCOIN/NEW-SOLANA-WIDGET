@@ -174,18 +174,11 @@
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
             const connection = new solanaWeb3.Connection(quickNodeUrl);
-
-            let recentBlockhash;
-            try {
-                const { blockhash } = await connection.getRecentBlockhash();
-                recentBlockhash = blockhash;
-            } catch (err) {
-                console.error('Failed to get recent blockhash:', err);
-                alert('Failed to get recent blockhash.');
-                return;
-            }
-
-            const transaction = new solanaWeb3.Transaction({ recentBlockhash }).add(
+            const { blockhash } = await connection.getRecentBlockhash();
+            const transaction = new solanaWeb3.Transaction({
+                feePayer: new solanaWeb3.PublicKey(account),
+                recentBlockhash: blockhash,
+            }).add(
                 solanaWeb3.SystemProgram.transfer({
                     fromPubkey: new solanaWeb3.PublicKey(account),
                     toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
@@ -195,8 +188,7 @@
 
             try {
                 console.log('Sending transaction:', transaction);
-                const signedTransaction = await window.solana.signTransaction(transaction);
-                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
                 await connection.confirmTransaction(signature);
                 alert('Transaction successful with signature: ' + signature);
                 console.log('Transaction successful:', signature);
@@ -271,7 +263,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
+        <img src="https://alimahdi01.github.io/solana-payment-widget/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <div id="walletAddress"></div>
