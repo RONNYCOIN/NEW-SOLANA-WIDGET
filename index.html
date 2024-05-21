@@ -174,17 +174,17 @@
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
             const connection = new solanaWeb3.Connection(quickNodeUrl);
-            const recentBlockhash = await connection.getRecentBlockhash();
-            const transaction = new solanaWeb3.Transaction({
-                recentBlockhash: recentBlockhash.blockhash,
-                feePayer: new solanaWeb3.PublicKey(account),
-            }).add(
+            const { blockhash } = await connection.getRecentBlockhash();
+            const transaction = new solanaWeb3.Transaction().add(
                 solanaWeb3.SystemProgram.transfer({
                     fromPubkey: new solanaWeb3.PublicKey(account),
                     toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
                     lamports: lamports
                 })
             );
+
+            transaction.recentBlockhash = blockhash;
+            transaction.feePayer = new solanaWeb3.PublicKey(account);
 
             try {
                 console.log('Sending transaction:', transaction);
