@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BUY $RONNY BEFORE LAUNCH!</title>
+    <title>$RONNY Pre-Sale Widget</title>
     <style>
         @font-face {
             font-family: 'NegritaPro';
-            src: url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff2') format('woff2'),
-                 url('https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/NegritaPro.woff') format('woff');
+            src: url('NegritaPro.woff2') format('woff2'),
+                 url('NegritaPro.woff') format('woff');
             font-weight: normal;
             font-style: normal;
         }
+
         body {
             font-family: 'NegritaPro', Arial, sans-serif;
             display: flex;
@@ -22,65 +23,60 @@
             margin: 0;
             background-color: #5FA2C7;
         }
+
         .container {
-            background-color: #5FA2C7;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #EDEDED;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
             text-align: center;
-            max-width: 350px;
-            width: 100%;
+            width: 300px;
         }
-        h1 {
-            color: #EFE8E4;
-            margin-bottom: 20px;
+
+        .container img {
+            width: 100px;
         }
-        img {
-            width: 120px;
-            height: auto;
-            margin-bottom: 20px;
+
+        .container h1 {
+            font-size: 24px;
+            margin: 20px 0;
         }
-        button {
-            background-color: #000;
-            color: #EFE8E4;
-            padding: 10px 15px;
+
+        .container button {
+            background-color: black;
+            color: white;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 20px;
-            width: 100%;
-        }
-        button:disabled {
-            background-color: #ccc;
-        }
-        input[type="number"] {
             padding: 10px;
-            font-size: 14px;
-            margin-top: 10px;
-            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
             border: 1px solid #ccc;
-            width: calc(50% - 11px);
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
         }
-        #walletAddress {
-            margin-top: 15px;
+
+        .container .small-input {
+            width: 48%;
+        }
+
+        .container p {
+            font-size: 14px;
+            color: black;
+        }
+
+        .container .wallet-address {
             word-break: break-all;
-            color: #EFE8E4;
         }
-        #ronnyAmount {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #EFE8E4;
-        }
-        #ronnyPerSol {
-            margin-bottom: 10px;
-            color: #EFE8E4;
-        }
-        #raisedAmount, #boughtAmount {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #EFE8E4;
-        }
+
         .modal {
             display: none;
             position: fixed;
@@ -92,28 +88,47 @@
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
         }
+
         .modal-content {
             background-color: #5FA2C7;
             margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 70%;
-            max-width: 250px;
+            width: 80%;
+            max-width: 300px;
             text-align: center;
-            border-radius: 12px;
+            border-radius: 15px;
         }
-        .wallet-logo {
-            width: 20px;
-            height: auto;
-            margin: 10px;
-        }
-        .amount-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .modal-content button {
+            width: 80%;
+            margin: 10px 0;
+            font-size: 18px;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="ronny-logo.png" alt="$RONNY">
+        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
+        <button id="connectWalletBtn">Connect Wallet</button>
+        <div style="display: flex; justify-content: space-between;">
+            <input type="number" id="amountInSol" class="small-input" placeholder="Amount in SOL">
+            <input type="number" id="amountInRonny" class="small-input" placeholder="Amount in $RONNY" readonly>
+        </div>
+        <button id="buyRonnyBtn" disabled>BUY $RONNY!</button>
+        <p class="wallet-address">You may also send Sol to this address to participate in the presale: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
+        <p>Total Raised: <span id="totalRaised">0</span> SOL</p>
+        <p>Your $RONNY: <span id="yourRonny">0</span> $RONNY Coins</p>
+    </div>
+
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Wallet</h2>
+            <button id="phantomWalletBtn">Phantom</button>
+        </div>
+    </div>
+
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
@@ -121,13 +136,13 @@
         let connectedWalletType = null;
 
         function showWalletModal() {
-            const modal = document.getElementById("walletModal");
-            modal.style.display = "block";
+            const modal = document.getElementById('walletModal');
+            modal.style.display = 'block';
         }
 
         function hideWalletModal() {
-            const modal = document.getElementById("walletModal");
-            modal.style.display = "none";
+            const modal = document.getElementById('walletModal');
+            modal.style.display = 'none';
         }
 
         async function connectWallet(walletType) {
@@ -138,136 +153,30 @@
                 try {
                     const resp = await window.solana.connect({ onlyIfTrusted: false });
                     account = resp.publicKey.toString();
-                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
-                    document.getElementById('connectWallet').textContent = "DISCONNECT";
-                    document.getElementById('sendSol').disabled = false;
-                    updateBoughtAmount();
-                    console.log('Connected to Phantom wallet:', account);
+                    document.getElementById('connectWalletBtn').textContent = 'Connected';
+                    document.getElementById('buyRonnyBtn').disabled = false;
+                    updateTokenBalance();
                 } catch (err) {
                     console.error('Phantom Wallet Connection Error:', err);
                 }
-            } else {
-                alert('Please install the selected wallet');
             }
         }
 
-        function disconnectWallet() {
-            if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
-                window.solana.disconnect();
-            }
-
-            account = null;
-            connectedWalletType = null;
-            document.getElementById('walletAddress').textContent = "";
-            document.getElementById('connectWallet').textContent = "Connect Wallet";
-            document.getElementById('sendSol').disabled = true;
-            console.log('Wallet disconnected');
+        function updateTokenBalance() {
+            const solAmount = document.getElementById('amountInSol').value;
+            document.getElementById('amountInRonny').value = solAmount * RONNY_PER_SOL;
         }
 
-        async function sendSol() {
-            if (!account) {
-                console.error('No wallet connected');
-                alert('Please connect your wallet first.');
-                return;
-            }
-
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (isNaN(amount) || amount <= 0) {
-                alert('Please enter a valid amount');
-                return;
-            }
-
-            const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
-
-            try {
-                const { blockhash } = await connection.getRecentBlockhash();
-                const transaction = new solanaWeb3.Transaction().add(
-                    solanaWeb3.SystemProgram.transfer({
-                        fromPubkey: new solanaWeb3.PublicKey(account),
-                        toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
-                        lamports: lamports
-                    })
-                );
-
-                transaction.recentBlockhash = blockhash;
-                transaction.feePayer = new solanaWeb3.PublicKey(account);
-
-                const signedTransaction = await window.solana.signTransaction(transaction);
-                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                await connection.confirmTransaction(signature);
-                alert('Transaction successful with signature: ' + signature);
-                console.log('Transaction successful:', signature);
-
-                updateRaisedAmount();
-                updateBoughtAmount();
-            } catch (err) {
-                console.error('Transaction Error:', err);
-                alert('Transaction failed: ' + err.message);
-            }
-        }
-
-        async function updateRaisedAmount() {
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
-            const balance = await connection.getBalance(new solanaWeb3.PublicKey(recipientWalletAddress));
-            const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-            document.getElementById('raisedAmount').textContent = "Total Raised: " + solBalance.toFixed(2) + " SOL";
-        }
-
-        function updateBoughtAmount() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const ronnyAmount = isNaN(amount) ? 0 : amount * RONNY_PER_SOL;
-            document.getElementById('ronnyAmountDisplay').value = ronnyAmount + " $RONNY";
-        }
-
-        document.getElementById('connectWallet').addEventListener('click', () => {
-            if (account) {
-                disconnectWallet();
-            } else {
-                showWalletModal();
-            }
-        });
-
-        document.getElementById('amount').addEventListener('input', updateBoughtAmount);
+        document.getElementById('connectWalletBtn').addEventListener('click', showWalletModal);
+        document.getElementById('phantomWalletBtn').addEventListener('click', () => connectWallet('phantom'));
+        document.getElementById('amountInSol').addEventListener('input', updateTokenBalance);
 
         window.onclick = function(event) {
-            const modal = document.getElementById("walletModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
+            const modal = document.getElementById('walletModal');
+            if (event.target === modal) {
+                hideWalletModal();
             }
         }
-    </script>
-</head>
-<body>
-    <div class="container">
-        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
-        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
-        <button id="connectWallet">Connect Wallet</button>
-        <p id="walletAddress"></p>
-        <div class="amount-section">
-            <div>
-                <label for="amount">Amount in SOL</label>
-                <input type="number" id="amount" placeholder="0.00">
-            </div>
-            <div>
-                <label for="ronnyAmountDisplay">Amount in $RONNY</label>
-                <input type="text" id="ronnyAmountDisplay" readonly>
-            </div>
-        </div>
-        <p id="ronnyPerSol">1 SOL = 6969 $RONNY</p>
-        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
-        <p id="raisedAmount">Total Raised: 0 SOL</p>
-        <p id="boughtAmount">Your $RONNY: 0 $RONNY Coins</p>
-        <p id="alternative">You may also send Sol to this address to participate in the presale: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
-    </div>
-    <div id="walletModal" class="modal">
-        <div class="modal-content">
-            <h2>Select Wallet</h2>
-            <button onclick="connectWallet('phantom')">Phantom</button>
-        </div>
-    </div>
-    <script>
-        updateRaisedAmount();
     </script>
 </body>
 </html>
