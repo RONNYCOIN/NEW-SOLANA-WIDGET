@@ -58,9 +58,9 @@
             padding: 10px;
             font-size: 14px;
             margin-top: 10px;
-            width: calc(100% - 22px);
             border-radius: 5px;
             border: 1px solid #ccc;
+            width: calc(50% - 11px);
         }
         #walletAddress {
             margin-top: 15px;
@@ -74,7 +74,6 @@
         }
         #ronnyPerSol {
             margin-bottom: 10px;
-            margin-top: 10px;
             color: #EFE8E4;
         }
         #raisedAmount, #boughtAmount {
@@ -108,37 +107,13 @@
             height: auto;
             margin: 10px;
         }
+        .amount-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
-</head>
-<body>
-    <div class="container">
-        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
-        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
-        <button id="connectWallet">Connect Wallet</button>
-        <p id="walletAddress"></p>
-        <div>
-            <label for="amount">Amount in SOL</label>
-            <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
-        </div>
-        <div>
-            <label for="ronnyAmountDisplay">Amount in $RONNY</label>
-            <p id="ronnyAmountDisplay">0 $RONNY</p>
-        </div>
-        <span id="ronnyPerSol">1 SOL = 6969 $RONNY</span>
-        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
-        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
-        <div id="raisedAmount">Total Raised: 0 SOL</div>
-        <p id="purchaseInstructions">You may also send Sol to this address to participate in the presale : G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
-    </div>
-
-    <div id="walletModal" class="modal">
-        <div class="modal-content">
-            <h2>Select Wallet</h2>
-            <button onclick="connectWallet('phantom')">Phantom</button>
-        </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
@@ -172,7 +147,7 @@
                     console.error('Phantom Wallet Connection Error:', err);
                 }
             } else {
-                alert('Please install the Phantom wallet');
+                alert('Please install the selected wallet');
             }
         }
 
@@ -203,7 +178,7 @@
             }
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
-            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/'); // Using QuickNode URL
+            const connection = new solanaWeb3.Connection('https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/');
 
             try {
                 const { blockhash } = await connection.getRecentBlockhash();
@@ -218,13 +193,11 @@
                 transaction.recentBlockhash = blockhash;
                 transaction.feePayer = new solanaWeb3.PublicKey(account);
 
-                if (connectedWalletType === 'phantom') {
-                    const signedTransaction = await window.solana.signTransaction(transaction);
-                    const signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                    await connection.confirmTransaction(signature);
-                    alert('Transaction successful with signature: ' + signature);
-                    console.log('Transaction successful:', signature);
-                }
+                const signedTransaction = await window.solana.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+                await connection.confirmTransaction(signature);
+                alert('Transaction successful with signature: ' + signature);
+                console.log('Transaction successful:', signature);
 
                 updateRaisedAmount();
                 updateBoughtAmount();
@@ -244,7 +217,7 @@
         function updateBoughtAmount() {
             const amount = parseFloat(document.getElementById('amount').value);
             const ronnyAmount = isNaN(amount) ? 0 : amount * RONNY_PER_SOL;
-            document.getElementById('ronnyAmountDisplay').textContent = ronnyAmount + " $RONNY";
+            document.getElementById('ronnyAmountDisplay').value = ronnyAmount + " $RONNY";
         }
 
         document.getElementById('connectWallet').addEventListener('click', () => {
@@ -257,13 +230,44 @@
 
         document.getElementById('amount').addEventListener('input', updateBoughtAmount);
 
-        // Add event listener to hide modal when clicking outside of it
         window.onclick = function(event) {
             const modal = document.getElementById("walletModal");
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/RONNYCOIN/NEW-SOLANA-WIDGET/raw/main/$RONNYwnobg.png" alt="Ronny Image">
+        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <p id="walletAddress"></p>
+        <div class="amount-section">
+            <div>
+                <label for="amount">Amount in SOL</label>
+                <input type="number" id="amount" placeholder="0.00">
+            </div>
+            <div>
+                <label for="ronnyAmountDisplay">Amount in $RONNY</label>
+                <input type="text" id="ronnyAmountDisplay" readonly>
+            </div>
+        </div>
+        <p id="ronnyPerSol">1 SOL = 6969 $RONNY</p>
+        <button id="sendSol" onclick="sendSol()" disabled>BUY $RONNY!</button>
+        <p id="raisedAmount">Total Raised: 0 SOL</p>
+        <p id="boughtAmount">Your $RONNY: 0 $RONNY Coins</p>
+        <p id="alternative">You may also send Sol to this address to participate in the presale: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
+    </div>
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Wallet</h2>
+            <button onclick="connectWallet('phantom')">Phantom</button>
+        </div>
+    </div>
+    <script>
+        updateRaisedAmount();
     </script>
 </body>
 </html>
