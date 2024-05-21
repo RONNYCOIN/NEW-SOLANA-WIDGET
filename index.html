@@ -125,6 +125,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
+
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
         const RONNY_PER_SOL = 6969;
@@ -174,23 +176,23 @@
 
         async function buyRonny() {
             if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
-                const amountInSol = document.getElementById('amountInSol').value;
-                const transaction = new window.solana.Transaction().add(
-                    window.solana.SystemProgram.transfer({
-                        fromPubkey: new window.solana.PublicKey(account),
-                        toPubkey: new window.solana.PublicKey(recipientWalletAddress),
-                        lamports: amountInSol * window.solana.LAMPORTS_PER_SOL, // Convert SOL to lamports
+                const amountInSol = parseFloat(document.getElementById('amountInSol').value);
+                const transaction = new solanaWeb3.Transaction().add(
+                    solanaWeb3.SystemProgram.transfer({
+                        fromPubkey: new solanaWeb3.PublicKey(account),
+                        toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
+                        lamports: amountInSol * solanaWeb3.LAMPORTS_PER_SOL, // Convert SOL to lamports
                     })
                 );
                 try {
-                    const signature = await window.solana.signAndSendTransaction(transaction);
+                    const { signature } = await window.solana.signAndSendTransaction(transaction);
                     console.log('Transaction signature:', signature);
                     alert('Transaction successful! Your $RONNY will be sent shortly.');
                     // Update total raised and user's $RONNY balance
                     const totalRaisedElement = document.getElementById('totalRaised');
-                    totalRaisedElement.textContent = (parseFloat(totalRaisedElement.textContent) + parseFloat(amountInSol)).toFixed(2);
+                    totalRaisedElement.textContent = (parseFloat(totalRaisedElement.textContent) + amountInSol).toFixed(2);
                     const yourRonnyElement = document.getElementById('yourRonny');
-                    yourRonnyElement.textContent = (parseFloat(yourRonnyElement.textContent) + (parseFloat(amountInSol) * RONNY_PER_SOL)).toFixed(2);
+                    yourRonnyElement.textContent = (parseFloat(yourRonnyElement.textContent) + (amountInSol * RONNY_PER_SOL)).toFixed(2);
                 } catch (err) {
                     console.error('Transaction Error:', err);
                     alert('Transaction failed. Please try again.');
@@ -199,8 +201,8 @@
         }
 
         function updateTokenBalance() {
-            const solAmount = document.getElementById('amountInSol').value;
-            document.getElementById('amountInRonny').value = solAmount * RONNY_PER_SOL;
+            const solAmount = parseFloat(document.getElementById('amountInSol').value);
+            document.getElementById('amountInRonny').value = (solAmount * RONNY_PER_SOL).toFixed(2);
         }
 
         document.getElementById('connectWalletBtn').addEventListener('click', showWalletModal);
