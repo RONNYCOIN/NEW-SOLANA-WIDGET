@@ -59,10 +59,18 @@
             display: flex;
             flex-direction: column;
             width: calc(50% - 10px);
+            position: relative;
         }
         .input-group label {
             color: #EFE8E4;
             margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .input-group span {
+            position: absolute;
+            right: 10px;
+            top: 35px;
+            color: #EFE8E4;
             font-size: 14px;
         }
         input[type="number"], input[type="text"] {
@@ -70,6 +78,7 @@
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            padding-right: 35px; /* Add space for the currency text */
         }
         #walletAddress {
             margin-top: 15px;
@@ -291,10 +300,12 @@
             <div class="input-group">
                 <label for="amount">AMOUNT OF SOLANA</label>
                 <input type="number" id="amount" placeholder="">
+                <span>$SOL</span>
             </div>
             <div class="input-group">
                 <label for="ronnyAmount">AMOUNT OF $RONNY</label>
                 <input type="text" id="ronnyAmount" placeholder="0 $RONNY" readonly>
+                <span>$RONNY</span>
             </div>
         </div>
         <button id="sendSol" disabled>BUY $RONNY!</button>
