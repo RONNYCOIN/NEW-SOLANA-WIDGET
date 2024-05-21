@@ -88,11 +88,6 @@
             text-align: center;
             border-radius: 12px;
         }
-        #transactionStatus {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #EFE8E4;
-        }
     </style>
     <!-- Ensure the correct version of Solana Web3.js is loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
@@ -179,6 +174,8 @@
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
             const connection = new solanaWeb3.Connection(quickNodeUrl);
+            const { blockhash } = await connection.getRecentBlockhash();
+
             const transaction = new solanaWeb3.Transaction().add(
                 solanaWeb3.SystemProgram.transfer({
                     fromPubkey: new solanaWeb3.PublicKey(account),
@@ -187,22 +184,21 @@
                 })
             );
 
+            transaction.recentBlockhash = blockhash;
+            transaction.feePayer = new solanaWeb3.PublicKey(account);
+
             try {
                 console.log('Sending transaction:', transaction);
-                const { signature } = await window.solana.signAndSendTransaction(transaction);
+                const signedTransaction = await window.solana.signTransaction(transaction);
+                const signature = await connection.sendRawTransaction(signedTransaction.serialize());
                 await connection.confirmTransaction(signature);
-                const status = document.getElementById('transactionStatus');
-                status.textContent = 'Transaction successful with signature: ' + signature;
-                status.style.color = 'green';
+                document.getElementById('transactionStatus').textContent = "Transaction successful with signature: " + signature;
                 console.log('Transaction successful:', signature);
                 updateRaisedAmount();
                 updateBoughtAmount();
             } catch (err) {
                 console.error('Transaction Error:', err);
-                const status = document.getElementById('transactionStatus');
-                status.textContent = 'Transaction failed';
-                status.style.color = 'red';
-                alert('Transaction failed');
+                document.getElementById('transactionStatus').textContent = "Transaction failed: " + err.message;
             }
         }
 
@@ -279,8 +275,8 @@
         <button id="sendSol" disabled>BUY $RONNY!</button>
         <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
         <div id="raisedAmount">Total Raised: 0 SOL</div>
-        <div>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
         <div id="transactionStatus"></div>
+        <div>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
     </div>
 
     <div id="walletModal" class="modal">
