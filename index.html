@@ -151,6 +151,7 @@
                     account = resp.publicKey.toString();
                     document.getElementById('connectWalletBtn').textContent = 'Disconnect Wallet';
                     document.getElementById('buyRonnyBtn').disabled = false;
+                    document.getElementById('connectWalletBtn').removeEventListener('click', showWalletModal);
                     document.getElementById('connectWalletBtn').addEventListener('click', disconnectWallet);
                     updateTokenBalance();
                 } catch (err) {
@@ -167,6 +168,7 @@
                 connectedWalletType = null;
                 account = null;
                 document.getElementById('connectWalletBtn').removeEventListener('click', disconnectWallet);
+                document.getElementById('connectWalletBtn').addEventListener('click', showWalletModal);
             }
         }
 
