@@ -283,8 +283,8 @@
             if (amountInput) {
                 amountInput.addEventListener('input', function() {
                     const amount = parseFloat(amountInput.value);
-                    const ronnyAmount = isNaN(amount) ? 0 : amount * 6969;
-                    document.getElementById('ronnyAmount').value = ronnyAmount.toFixed(2);
+                    const ronnyAmount = isNaN(amount) ? '' : (amount * 6969).toFixed(2);
+                    document.getElementById('ronnyAmount').value = ronnyAmount;
                 });
             }
         });
@@ -304,7 +304,7 @@
             </div>
             <div class="input-group">
                 <label for="ronnyAmount">AMOUNT OF $RONNY</label>
-                <input type="text" id="ronnyAmount" placeholder="0 $RONNY" readonly>
+                <input type="text" id="ronnyAmount" placeholder="" readonly>
                 <span>$RONNY</span>
             </div>
         </div>
