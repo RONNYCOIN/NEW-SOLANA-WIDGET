@@ -55,17 +55,13 @@
         }
 
         .container input {
-            width: 100%;
+            width: 48%;
             padding: 10px;
-            margin: 10px 0;
+            margin: 10px 1%;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 16px;
             text-align: center;
-        }
-
-        .container .small-input {
-            width: 48%;
         }
 
         .container p {
@@ -109,12 +105,12 @@
 </head>
 <body>
     <div class="container">
-        <img src="ronny-logo.png" alt="$RONNY">
+        <img src="path/to/your/ronny-logo.png" alt="$RONNY"> <!-- Ensure this path is correct -->
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWalletBtn">Connect Wallet</button>
         <div style="display: flex; justify-content: space-between;">
-            <input type="number" id="amountInSol" class="small-input" placeholder="Amount in SOL">
-            <input type="number" id="amountInRonny" class="small-input" placeholder="Amount in $RONNY" readonly>
+            <input type="number" id="amountInSol" placeholder="Amount in SOL">
+            <input type="number" id="amountInRonny" placeholder="Amount in $RONNY" readonly>
         </div>
         <button id="buyRonnyBtn" disabled>BUY $RONNY!</button>
         <p class="wallet-address">You may also send Sol to this address to participate in the presale: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</p>
