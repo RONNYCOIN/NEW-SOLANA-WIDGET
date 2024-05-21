@@ -158,6 +158,32 @@
             }
         }
 
+        async function buyRonny() {
+            if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                const amountInSol = document.getElementById('amountInSol').value;
+                const transaction = new window.solana.Transaction().add(
+                    window.solana.SystemProgram.transfer({
+                        fromPubkey: new window.solana.PublicKey(account),
+                        toPubkey: new window.solana.PublicKey(recipientWalletAddress),
+                        lamports: amountInSol * window.solana.LAMPORTS_PER_SOL, // Convert SOL to lamports
+                    })
+                );
+                try {
+                    const signature = await window.solana.signAndSendTransaction(transaction);
+                    console.log('Transaction signature:', signature);
+                    alert('Transaction successful! Your $RONNY will be sent shortly.');
+                    // Update total raised and user's $RONNY balance
+                    const totalRaisedElement = document.getElementById('totalRaised');
+                    totalRaisedElement.textContent = (parseFloat(totalRaisedElement.textContent) + parseFloat(amountInSol)).toFixed(2);
+                    const yourRonnyElement = document.getElementById('yourRonny');
+                    yourRonnyElement.textContent = (parseFloat(yourRonnyElement.textContent) + (parseFloat(amountInSol) * RONNY_PER_SOL)).toFixed(2);
+                } catch (err) {
+                    console.error('Transaction Error:', err);
+                    alert('Transaction failed. Please try again.');
+                }
+            }
+        }
+
         function updateTokenBalance() {
             const solAmount = document.getElementById('amountInSol').value;
             document.getElementById('amountInRonny').value = solAmount * RONNY_PER_SOL;
@@ -166,6 +192,7 @@
         document.getElementById('connectWalletBtn').addEventListener('click', showWalletModal);
         document.getElementById('phantomWalletBtn').addEventListener('click', () => connectWallet('phantom'));
         document.getElementById('amountInSol').addEventListener('input', updateTokenBalance);
+        document.getElementById('buyRonnyBtn').addEventListener('click', buyRonny);
 
         window.onclick = function(event) {
             const modal = document.getElementById('walletModal');
