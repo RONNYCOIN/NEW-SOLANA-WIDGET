@@ -174,7 +174,11 @@
 
             const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
             const connection = new solanaWeb3.Connection(quickNodeUrl);
-            const transaction = new solanaWeb3.Transaction().add(
+            const recentBlockhash = await connection.getRecentBlockhash();
+            const transaction = new solanaWeb3.Transaction({
+                recentBlockhash: recentBlockhash.blockhash,
+                feePayer: new solanaWeb3.PublicKey(account),
+            }).add(
                 solanaWeb3.SystemProgram.transfer({
                     fromPubkey: new solanaWeb3.PublicKey(account),
                     toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
@@ -259,7 +263,7 @@
 </head>
 <body>
     <div class="container">
-        <img src="https://raw.githubusercontent.com/RONNYCOIN/NEW-SOLANA-WIDGET/main/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
+        <img src="https://RONNYCOIN.github.io/NEW-SOLANA-WIDGET/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
         <h1>BUY $RONNY BEFORE LAUNCH!</h1>
         <button id="connectWallet">Connect Wallet</button>
         <div id="walletAddress"></div>
