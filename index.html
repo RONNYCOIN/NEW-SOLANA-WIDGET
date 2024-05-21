@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Buy $RONNY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUY $RONNY BEFORE LAUNCH!</title>
     <style>
         @font-face {
             font-family: 'NegritaPro';
             src: url('NegritaPro.woff2') format('woff2'),
                  url('NegritaPro.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
         }
-
         body {
             font-family: 'NegritaPro', Arial, sans-serif;
             display: flex;
@@ -20,145 +22,262 @@
             margin: 0;
             background-color: #5FA2C7;
         }
-
         .container {
-            background-color: #FEFE84;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'NegritaPro', Arial, sans-serif;
+            background-color: #5FA2C7;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px;
+            max-width: 400px;
+            width: 100%;
         }
-
-        #connectWallet, #disconnectWallet, #buyRonnyButton {
-            background-color: black;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
+        h1 {
+            color: #EFE8E4;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #000;
+            color: #EFE8E4;
+            padding: 10px 15px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 20px;
             width: 100%;
-            margin-bottom: 10px;
         }
-
-        .input-group {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
+        button:disabled {
+            background-color: #ccc;
         }
-
-        .input-group div {
-            width: 48%;
-        }
-
-        input[type="text"] {
-            width: 100%;
+        input[type="number"] {
             padding: 10px;
+            font-size: 16px;
+            margin-top: 20px;
+            width: calc(100% - 22px);
             border-radius: 5px;
             border: 1px solid #ccc;
         }
-
-        .wallet-address {
+        #walletAddress {
+            margin-top: 15px;
             word-break: break-all;
+            color: #EFE8E4;
         }
-
-        .hidden {
+        #raisedAmount {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #EFE8E4;
+        }
+        .modal {
             display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #5FA2C7;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            border-radius: 12px;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <img src="$RONNYwnobg.png" alt="$RONNY" style="width: 100px; height: 100px; margin-bottom: 10px;">
-        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
-        <button id="connectWallet">Connect Wallet</button>
-        <button id="disconnectWallet" class="hidden">Disconnect Wallet</button>
-        <div class="input-group">
-            <div>
-                <label for="amountSol">Amount in SOL</label>
-                <input type="text" id="amountSol" placeholder="0.00">
-            </div>
-            <div>
-                <label for="amountRonny">Amount in $RONNY</label>
-                <input type="text" id="amountRonny" placeholder="0.00" readonly>
-            </div>
-        </div>
-        <button id="buyRonnyButton">BUY $RONNY!</button>
-        <div id="walletAddress" class="wallet-address"></div>
-        <div id="userRonny">Your $RONNY: 0 $RONNY Coins</div>
-        <div>Total Raised: <span id="totalRaised">0</span> SOL</div>
-        <div>You may also send Sol to this address to participate in the presale: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
-    </div>
-    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <!-- Ensure the correct version of Solana Web3.js is loaded -->
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
-        const RONNY_PER_SOL = 6969;
+        const quickNodeUrl = 'https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/';
         let account;
+        let connectedWalletType = null;
 
-        document.getElementById('connectWallet').addEventListener('click', async () => {
-            try {
-                const resp = await window.solana.connect();
-                account = resp.publicKey.toString();
-                document.getElementById('walletAddress').textContent = 'Connected wallet: ' + account;
-                document.getElementById('connectWallet').classList.add('hidden');
-                document.getElementById('disconnectWallet').classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
+        function showWalletModal() {
+            const modal = document.getElementById("walletModal");
+            modal.style.display = "block";
+        }
+
+        function hideWalletModal() {
+            const modal = document.getElementById("walletModal");
+            modal.style.display = "none";
+        }
+
+        async function connectWallet(walletType) {
+            hideWalletModal();
+            connectedWalletType = walletType;
+
+            if (walletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                try {
+                    const resp = await window.solana.connect({ onlyIfTrusted: false });
+                    account = resp.publicKey.toString();
+                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
+                    document.getElementById('connectWallet').textContent = "DISCONNECT";
+                    document.getElementById('sendSol').disabled = false;
+                    console.log('Connected to Phantom wallet:', account);
+                } catch (err) {
+                    console.error('Phantom Wallet Connection Error:', err);
+                }
+            } else if (walletType === 'solflare' && window.solflare) {
+                try {
+                    await window.solflare.connect();
+                    account = window.solflare.publicKey.toString();
+                    document.getElementById('walletAddress').textContent = "Connected wallet: " + account;
+                    document.getElementById('connectWallet').textContent = "DISCONNECT";
+                    document.getElementById('sendSol').disabled = false;
+                    console.log('Connected to Solflare wallet:', account);
+                } catch (err) {
+                    console.error('Solflare Wallet Connection Error:', err);
+                }
+            } else {
+                alert('Please install the selected wallet');
             }
-        });
+        }
 
-        document.getElementById('disconnectWallet').addEventListener('click', async () => {
-            window.solana.disconnect();
-            document.getElementById('walletAddress').textContent = '';
-            document.getElementById('connectWallet').classList.remove('hidden');
-            document.getElementById('disconnectWallet').classList.add('hidden');
-        });
+        function disconnectWallet() {
+            if (connectedWalletType === 'phantom' && window.solana && window.solana.isPhantom) {
+                window.solana.disconnect();
+            } else if (connectedWalletType === 'solflare' && window.solflare) {
+                window.solflare.disconnect();
+            }
 
-        document.getElementById('amountSol').addEventListener('input', () => {
-            const solAmount = parseFloat(document.getElementById('amountSol').value);
-            document.getElementById('amountRonny').value = solAmount * RONNY_PER_SOL;
-        });
+            account = null;
+            connectedWalletType = null;
+            document.getElementById('walletAddress').textContent = "";
+            document.getElementById('connectWallet').textContent = "Connect Wallet";
+            document.getElementById('sendSol').disabled = true;
+            console.log('Wallet disconnected');
+        }
 
-        document.getElementById('buyRonnyButton').addEventListener('click', async () => {
-            await buyRonny();
-        });
+        async function sendSol() {
+            if (!account) {
+                console.error('No wallet connected');
+                alert('Please connect your wallet first.');
+                return;
+            }
 
-        async function buyRonny() {
-            const connection = new solanaWeb3.Connection(
-                "https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/",
-                "confirmed"
-            );
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
 
-            const fromPublicKey = new solanaWeb3.PublicKey(account);
-            const toPublicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
-            const amountInLamports = solanaWeb3.LAMPORTS_PER_SOL * parseFloat(document.getElementById("amountSol").value);
+            if (typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined');
+                alert('Solana Web3 library is not loaded.');
+                return;
+            }
 
-            let transaction = new solanaWeb3.Transaction().add(
+            const lamports = amount * solanaWeb3.LAMPORTS_PER_SOL;
+            const connection = new solanaWeb3.Connection(quickNodeUrl);
+            const transaction = new solanaWeb3.Transaction().add(
                 solanaWeb3.SystemProgram.transfer({
-                    fromPubkey: fromPublicKey,
-                    toPubkey: toPublicKey,
-                    lamports: amountInLamports,
+                    fromPubkey: new solanaWeb3.PublicKey(account),
+                    toPubkey: new solanaWeb3.PublicKey(recipientWalletAddress),
+                    lamports: lamports
                 })
             );
 
-            const { blockhash } = await connection.getRecentBlockhash("finalized");
-            transaction.recentBlockhash = blockhash;
-            transaction.feePayer = fromPublicKey;
-
             try {
-                let signedTransaction = await window.solana.signTransaction(transaction);
-                let signature = await connection.sendRawTransaction(signedTransaction.serialize());
-                await connection.confirmTransaction(signature, "confirmed");
-                alert("Transaction successful!");
-            } catch (error) {
-                console.error("Transaction Error:", error);
-                alert("Transaction failed. Please try again.");
+                console.log('Sending transaction:', transaction);
+                const { signature } = await window.solana.signAndSendTransaction(transaction);
+                await connection.confirmTransaction(signature);
+                alert('Transaction successful with signature: ' + signature);
+                console.log('Transaction successful:', signature);
+                updateRaisedAmount();
+            } catch (err) {
+                console.error('Transaction Error:', err);
+                alert('Transaction failed');
             }
         }
+
+        async function updateRaisedAmount() {
+            if (typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined');
+                alert('Solana Web3 library is not loaded.');
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection(quickNodeUrl);
+            const publicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
+            try {
+                const balance = await connection.getBalance(publicKey);
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                document.getElementById('raisedAmount').textContent = "Total Raised: " + solBalance.toFixed(2) + " SOL";
+                console.log('Updated raised amount:', solBalance);
+            } catch (err) {
+                console.error('Failed to update raised amount:', err);
+            }
+        }
+
+        async function updateBoughtAmount() {
+            if (typeof solanaWeb3 === 'undefined') {
+                console.error('solanaWeb3 is not defined');
+                alert('Solana Web3 library is not loaded.');
+                return;
+            }
+
+            const connection = new solanaWeb3.Connection(quickNodeUrl);
+            const publicKey = new solanaWeb3.PublicKey(account);
+            try {
+                const balance = await connection.getBalance(publicKey);
+                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+                const ronnyBalance = solBalance * 6969;
+                document.getElementById('boughtAmount').textContent = "Your $RONNY: " + ronnyBalance.toFixed(2) + " $RONNY Coins";
+                console.log('Updated bought amount:', ronnyBalance);
+            } catch (err) {
+                console.error('Failed to update bought amount:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateRaisedAmount();
+
+            const connectWalletBtn = document.getElementById('connectWallet');
+            if (connectWalletBtn) {
+                connectWalletBtn.addEventListener('click', function() {
+                    if (connectedWalletType) {
+                        disconnectWallet();
+                    } else {
+                        showWalletModal();
+                    }
+                });
+            }
+
+            const sendSolBtn = document.getElementById('sendSol');
+            if (sendSolBtn) {
+                sendSolBtn.addEventListener('click', function() {
+                    sendSol();
+                });
+            }
+        });
     </script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://alimahdi01.github.io/solana-payment-widget/$RONNYwnobg.png" alt="$RONNY Logo" style="width: 150px;">
+        <h1>BUY $RONNY BEFORE LAUNCH!</h1>
+        <button id="connectWallet">Connect Wallet</button>
+        <div id="walletAddress"></div>
+        <input type="number" id="amount" placeholder="ENTER PURCHASE AMOUNT IN SOLANA">
+        <div id="ronnyPerSol">1 SOL = 6969 $RONNY</div>
+        <button id="sendSol" disabled>BUY $RONNY!</button>
+        <div id="boughtAmount">Your $RONNY: 0 $RONNY Coins</div>
+        <div id="raisedAmount">Total Raised: 0 SOL</div>
+        <div>Alternatively you can send solana directly to this address to purchase your $RONNY COINS: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
+    </div>
+
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Wallet</h2>
+            <button onclick="connectWallet('phantom')"><img src="https://alimahdi01.github.io/solana-payment-widget/phantom.png" alt="Phantom Wallet Logo"> Phantom</button>
+            <button onclick="connectWallet('solflare')"><img src="https://alimahdi01.github.io/solana-payment-widget/solflare.png" alt="Solflare Wallet Logo"> Solflare</button>
+            <button onclick="hideWalletModal()">Cancel</button>
+        </div>
+    </div>
 </body>
 </html>
