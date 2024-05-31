@@ -138,7 +138,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
     <script>
         const recipientWalletAddress = 'G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG';
-        const quickNodeUrl = 'https://restless-necessary-wildflower.solana-mainnet.quiknode.pro/ffe17014aa5c31cf44834cca6e29e4099a05a82a/';
+        const quickNodeUrl = 'https://nameless-crimson-pond.solana-mainnet.quiknode.pro/6506a1a1f8e0eebc59cd862d93a92f66fe492833/';
         let account;
         let connectedWalletType = null;
 
@@ -166,6 +166,7 @@
                     console.log('Connected to Phantom wallet:', account);
                 } catch (err) {
                     console.error('Phantom Wallet Connection Error:', err);
+                    alert('Failed to connect to Phantom wallet. Please try again.');
                 }
             } else if (walletType === 'solflare' && window.solflare) {
                 try {
@@ -177,6 +178,7 @@
                     console.log('Connected to Solflare wallet:', account);
                 } catch (err) {
                     console.error('Solflare Wallet Connection Error:', err);
+                    alert('Failed to connect to Solflare wallet. Please try again.');
                 }
             } else {
                 alert('Please install the selected wallet');
@@ -315,12 +317,12 @@
         <div class="input-container">
             <div class="input-group">
                 <label for="amount">AMOUNT OF SOLANA</label>
-                <input type="number" id="amount" placeholder="">
+                <input type="number" id="amount" placeholder="" aria-label="Enter amount of Solana">
                 <span>$SOL</span>
             </div>
             <div class="input-group">
                 <label for="ronnyAmount">AMOUNT OF $RONNY</label>
-                <input type="text" id="ronnyAmount" placeholder="" readonly>
+                <input type="text" id="ronnyAmount" placeholder="" readonly aria-label="Amount of $RONNY">
                 <span>$RONNY</span>
             </div>
         </div>
@@ -331,9 +333,9 @@
         <button class="home-button" onclick="location.href='https://RONNYCOIN.XYZ'">HOME</button>
     </div>
 
-    <div id="walletModal" class="modal">
+    <div id="walletModal" class="modal" role="dialog" aria-labelledby="walletModalTitle" aria-hidden="true">
         <div class="modal-content">
-            <h2>Select Wallet</h2>
+            <h2 id="walletModalTitle">Select Wallet</h2>
             <button onclick="connectWallet('phantom')">Phantom</button>
             <button onclick="connectWallet('solflare')">Solflare</button>
             <button onclick="hideWalletModal()">Cancel</button>
