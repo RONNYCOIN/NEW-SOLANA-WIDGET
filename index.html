@@ -126,6 +126,12 @@
         .home-button {
             margin-top: 20px;
         }
+        .mobile-message {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #EFE8E4;
+            text-align: center;
+        }
     </style>
     <!-- Ensure the correct version of Solana Web3.js is loaded -->
     <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@1.31.0/lib/index.iife.min.js"></script>
@@ -330,6 +336,7 @@
             <button onclick="connectWallet('phantom')">Phantom</button>
             <button onclick="connectWallet('solflare')">Solflare</button>
             <button onclick="hideWalletModal()">Cancel</button>
+            <div class="mobile-message">If you are attempting to purchase from a mobile device please open this link in your wallet, or purchase by sending SOL to this address: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
         </div>
     </div>
 </body>
