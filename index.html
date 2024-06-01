@@ -85,11 +85,12 @@
             word-break: break-all;
             color: #EFE8E4;
         }
-        #raisedAmount {
+        /* Commented out raised amount section */
+        /* #raisedAmount {
             margin-top: 20px;
             font-size: 18px;
             color: #EFE8E4;
-        }
+        } */
         #purchaseAddress {
             margin-top: 20px;
             font-size: 16px;
@@ -250,34 +251,35 @@
                 await connection.confirmTransaction(signature);
                 document.getElementById('transactionStatus').textContent = "Transaction successful with signature: " + signature;
                 console.log('Transaction successful:', signature);
-                updateRaisedAmount();
+                // updateRaisedAmount(); // Commented out call to update raised amount
             } catch (err) {
                 console.error('Transaction Error:', err);
                 document.getElementById('transactionStatus').textContent = "Transaction failed: " + err.message;
             }
         }
 
-        async function updateRaisedAmount() {
-            if (typeof solanaWeb3 === 'undefined') {
-                console.error('solanaWeb3 is not defined');
-                alert('Solana Web3 library is not loaded.');
-                return;
-            }
+        // Commented out updateRaisedAmount function
+        // async function updateRaisedAmount() {
+        //     if (typeof solanaWeb3 === 'undefined') {
+        //         console.error('solanaWeb3 is not defined');
+        //         alert('Solana Web3 library is not loaded.');
+        //         return;
+        //     }
 
-            const connection = new solanaWeb3.Connection(quickNodeUrl);
-            const publicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
-            try {
-                const balance = await connection.getBalance(publicKey);
-                const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
-                document.getElementById('raisedAmount').textContent = "Total Raised: " + solBalance.toFixed(2) + " SOL";
-                console.log('Updated raised amount:', solBalance);
-            } catch (err) {
-                console.error('Failed to update raised amount:', err);
-            }
-        }
+        //     const connection = new solanaWeb3.Connection(quickNodeUrl);
+        //     const publicKey = new solanaWeb3.PublicKey(recipientWalletAddress);
+        //     try {
+        //         const balance = await connection.getBalance(publicKey);
+        //         const solBalance = balance / solanaWeb3.LAMPORTS_PER_SOL;
+        //         document.getElementById('raisedAmount').textContent = "Total Raised: " + solBalance.toFixed(2) + " SOL";
+        //         console.log('Updated raised amount:', solBalance);
+        //     } catch (err) {
+        //         console.error('Failed to update raised amount:', err);
+        //     }
+        // }
 
         document.addEventListener('DOMContentLoaded', (event) => {
-            updateRaisedAmount();
+            // updateRaisedAmount(); // Commented out call to update raised amount on load
 
             const connectWalletBtn = document.getElementById('connectWallet');
             if (connectWalletBtn) {
@@ -327,7 +329,8 @@
             </div>
         </div>
         <button id="sendSol" disabled>BUY $RONNY!</button>
-        <div id="raisedAmount">Total Raised: 0 SOL</div>
+        <!-- Commented out raised amount section -->
+        <!-- <div id="raisedAmount">Total Raised: 0 SOL</div> -->
         <div id="purchaseAddress">Alternatively send Solana to this address to purchase: G1ZVYuQn43GC31yatJS5FupodNVMAiuyR8QHNhWZRhHG</div>
         <div id="transactionStatus"></div>
         <button class="home-button" onclick="location.href='https://RONNYCOIN.XYZ'">HOME</button>
